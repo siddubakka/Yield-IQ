@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YieldIQ — AI-Powered Crop Price Optimization</title>
+    <meta name="description" content="Real-time crop price tracking, AI demand-supply insights, and intelligent trade recommendations for Indian farmers.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+
+<!-- ===================== LOGIN PAGE ===================== -->
+<div id="login-page" class="page active">
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="login-wrapper">
+        <div class="login-card glass">
+            <div class="login-logo">
+                <img src="assets/logo.png" alt="YieldIQ" class="logo-img">
+                <h2>Yield<span class="text-muted-span">IQ</span></h2>
+            </div>
+            <p class="login-subtitle">AI-Powered Smart Trading Platform</p>
+            <form id="loginForm" onsubmit="return handleAuth(event)">
+                <div class="form-group" id="nameGroup" style="display: none;">
+                    <label><i class="ph ph-user"></i> Full Name</label>
+                    <input type="text" id="loginName" placeholder="Rahul Kumar">
+                </div>
+                <div class="form-group">
+                    <label><i class="ph ph-envelope"></i> Email</label>
+                    <input type="email" id="loginEmail" placeholder="rahul@example.com" required>
+                </div>
+                <div class="form-group" id="phoneGroup" style="display: none;">
+                    <label><i class="ph ph-phone"></i> Mobile Number</label>
+                    <input type="tel" id="loginPhone" placeholder="+91 9876543210">
+                </div>
+                <div class="form-group">
+                    <label><i class="ph ph-lock"></i> Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <div id="loginError" class="error-msg"></div>
+                <button type="submit" class="btn btn-primary w-full" id="authSubmitBtn">
+                    <i class="ph ph-sign-in"></i> Login to Dashboard
+                </button>
+            </form>
+            <div class="login-hint" style="text-align: center; margin-top: 15px;">
+                <p id="authToggleText" style="cursor: pointer; color: var(--primary);" onclick="toggleAuthMode()">Don't have an account? <strong>Sign Up</strong></p>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;margin:18px 0 14px;">
+                <hr style="flex:1;border:none;border-top:1px solid var(--border);">
+                <span style="color:var(--text-muted);font-size:0.8rem;white-space:nowrap;">or continue with</span>
+                <hr style="flex:1;border:none;border-top:1px solid var(--border);">
+            </div>
+            <div style="display:flex;gap:0.75rem;">
+                <button onclick="socialLogin('google')" class="btn w-full" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;gap:8px;padding:0.7rem;border-radius:10px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    Google
+                </button>
+                <button onclick="socialLogin('facebook')" class="btn w-full" style="background:rgba(24,119,242,0.1);border:1px solid rgba(24,119,242,0.3);color:#1877F2;display:flex;align-items:center;justify-content:center;gap:8px;padding:0.7rem;border-radius:10px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(24,119,242,0.2)'" onmouseout="this.style.background='rgba(24,119,242,0.1)'">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    Facebook
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== LANDING PAGE ===================== -->
+<div id="landing-page" class="page">
+    <!-- Animated Leaf Particle Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Animated Grass Footer (bottom of hero) -->
+    <div class="grass-container">
+        <div class="grass-blade gb-1"></div>
+        <div class="grass-blade gb-2"></div>
+        <div class="grass-blade gb-3"></div>
+        <div class="grass-blade gb-4"></div>
+        <div class="grass-blade gb-5"></div>
+        <div class="grass-blade gb-6"></div>
+        <div class="grass-blade gb-7"></div>
+        <div class="grass-blade gb-8"></div>
+        <div class="grass-blade gb-9"></div>
+        <div class="grass-blade gb-10"></div>
+        <div class="grass-blade gb-11"></div>
+        <div class="grass-blade gb-12"></div>
+        <div class="grass-blade gb-13"></div>
+        <div class="grass-blade gb-14"></div>
+        <div class="grass-blade gb-15"></div>
+        <div class="grass-blade gb-16"></div>
+        <div class="grass-blade gb-17"></div>
+        <div class="grass-blade gb-18"></div>
+        <div class="grass-blade gb-19"></div>
+        <div class="grass-blade gb-20"></div>
+    </div>
+
+    <nav class="navbar glass">
+        <div class="logo-group" onclick="showPage('landing-page')">
+            <img src="assets/logo.png" alt="YieldIQ" class="logo-img-sm">
+            <span class="logo-text">Yield<span class="text-muted-span">IQ</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#stats-section">Impact</a>
+        </div>
+        <div class="nav-right">
+            <select id="langSelectLanding" class="lang-select" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="kn">ಕನ್ನಡ</option>
+            </select>
+            <button class="btn btn-primary" onclick="showPage('login-page')">
+                Open Dashboard <i class="ph ph-arrow-right"></i>
+            </button>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content reveal">
+            <div class="hero-badge hero-badge-green">
+                <span class="pulse-dot pulse-green"></span> SDG-2 · Zero Hunger · Live Market Intelligence
+            </div>
+            <h1>Empowering Farmers With<br><span class="text-gradient-green">Smart Agriculture</span></h1>
+            <p>Real-time crop price tracking across Indian mandis. AI-driven demand-supply insights and intelligent trade recommendations — connecting farmers directly with buyers.</p>
+            <div class="hero-actions">
+                <button class="btn btn-nature btn-lg" onclick="showPage('login-page')">
+                    <i class="ph ph-plant"></i> Start Trading Now
+                </button>
+                <button class="btn btn-outline-nature btn-lg" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+                    <i class="ph ph-play-circle"></i> Learn More
+                </button>
+            </div>
+            <!-- Trusted section removed and replaced by platform preview below -->
+        </div>
+        <div class="hero-visual reveal reveal-delay-1">
+            <!-- Animated Farm Scene -->
+            <div class="farm-scene">
+                <!-- Sun -->
+                <div class="scene-sun">
+                    <div class="sun-core"></div>
+                    <div class="sun-ray r1"></div>
+                    <div class="sun-ray r2"></div>
+                    <div class="sun-ray r3"></div>
+                    <div class="sun-ray r4"></div>
+                    <div class="sun-ray r5"></div>
+                    <div class="sun-ray r6"></div>
+                    <div class="sun-ray r7"></div>
+                    <div class="sun-ray r8"></div>
+                </div>
+                <!-- Plant 1 -->
+                <div class="plant plant-1">
+                    <div class="stem"></div>
+                    <div class="leaf leaf-l"></div>
+                    <div class="leaf leaf-r"></div>
+                    <div class="leaf leaf-l2"></div>
+                    <div class="leaf leaf-r2"></div>
+                    <div class="grain grain-1"></div>
+                    <div class="grain grain-2"></div>
+                    <div class="grain grain-3"></div>
+                </div>
+                <!-- Plant 2 -->
+                <div class="plant plant-2">
+                    <div class="stem"></div>
+                    <div class="leaf leaf-l"></div>
+                    <div class="leaf leaf-r"></div>
+                    <div class="grain grain-1"></div>
+                    <div class="grain grain-2"></div>
+                </div>
+                <!-- Plant 3 -->
+                <div class="plant plant-3">
+                    <div class="stem"></div>
+                    <div class="leaf leaf-l"></div>
+                    <div class="leaf leaf-r"></div>
+                    <div class="leaf leaf-l2"></div>
+                    <div class="grain grain-1"></div>
+                    <div class="grain grain-2"></div>
+                    <div class="grain grain-3"></div>
+                    <div class="grain grain-4"></div>
+                </div>
+                <!-- Ground -->
+                <div class="scene-ground"></div>
+            </div>
+
+            <!-- Floating Stat Cards -->
+            <div class="float-card float-card-1">
+                <i class="ph ph-trend-up"></i>
+                <div><strong>+23%</strong><small>Soybean ↑</small></div>
+            </div>
+            <div class="float-card float-card-2">
+                <i class="ph ph-currency-inr"></i>
+                <div><strong>₹2,840</strong><small>Wheat/qtl</small></div>
+            </div>
+            <div class="float-card float-card-3">
+                <i class="ph ph-users"></i>
+                <div><strong>12 Bids</strong><small>Active now</small></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Live Ticker -->
+    <div class="ticker-bar">
+        <div class="ticker-content" id="ticker-track"></div>
+    </div>
+
+    <!-- Stats Section -->
+    <!-- Live Activity Animation Section -->
+    <section id="activity-animation" class="section activity-section" style="overflow: hidden; padding-bottom: 2rem;">
+        <div class="section-head reveal" style="margin-bottom: 2rem;">
+            <h2>Live <span class="text-gradient">Market Intelligence</span></h2>
+            <p>Real-time data flow from agricultural sectors directly into our AI engine.</p>
+        </div>
+        
+        <div class="marquee-wrapper reveal reveal-delay-1">
+            <div class="marquee-track">
+                <!-- Group 1 -->
+                <div class="marquee-card glass">
+                    <div class="mc-icon" style="color: #4ade80"><i class="ph ph-plant"></i></div>
+                    <div class="mc-info"><strong>Wheat</strong><span>₹2,840/qtl</span></div>
+                    <div class="mc-trend up">+2.4%</div>
+                </div>
+                <div class="marquee-card glass">
+                    <div class="mc-icon" style="color: #60a5fa"><i class="ph ph-drop"></i></div>
+                    <div class="mc-info"><strong>Rainfall Alert</strong><span>Pune Dist.</span></div>
+                    <div class="mc-trend neutral">Processing</div>
+                </div>
+                <div class="marquee-card glass">
+                    <div class="mc-icon" style="color: #fbbf24"><i class="ph ph-handshake"></i></div>
+                    <div class="mc-info"><strong>New Bid</strong><span>Soybean</span></div>
+                    <div class="mc-trend up">₹4,510/qtl</div>
+                </div>
+                <div class="marquee-card glass">
+                    <div class="mc-icon" style="color: #ff5f56"><i class="ph ph-trend-down"></i></div>
+                    <div class="mc-info"><strong>Cotton</strong><span>₹6,200/qtl</span></div>
+                    <div class="mc-trend down">-1.2%</div>
+                </div>
+                <div class="marquee-card glass">
+                    <div class="mc-icon" style="color: #a78bfa"><i class="ph ph-brain"></i></div>
+                    <div class="mc-info"><strong>AI Alert</strong><span>Hold Turmeric</span></div>
+                    <div class="mc-trend neutral">Optimizing</div>
+                </div>
+                
+                <!-- Duplicate for seamless looping -->
+                <div class="marquee-card glass">
+                    <div class="mc-icon" style="color: #4ade80"><i class="ph ph-plant"></i></div>
+                    <div class="mc-info"><strong>Wheat</strong><span>₹2,840/qtl</span></div>
+                    <div class="mc-trend up">+2.4%</div>
+                </div>
+                <div class="marquee-card glass">
+                    <div class="mc-icon" style="color: #60a5fa"><i class="ph ph-drop"></i></div>
+                    <div class="mc-info"><strong>Rainfall Alert</strong><span>Pune Dist.</span></div>
+                    <div class="mc-trend neutral">Processing</div>
+                </div>
+                <div class="marquee-card glass">
+                    <div class="mc-icon" style="color: #fbbf24"><i class="ph ph-handshake"></i></div>
+                    <div class="mc-info"><strong>New Bid</strong><span>Soybean</span></div>
+                    <div class="mc-trend up">₹4,510/qtl</div>
+                </div>
+                <div class="marquee-card glass">
+                    <div class="mc-icon" style="color: #ff5f56"><i class="ph ph-trend-down"></i></div>
+                    <div class="mc-info"><strong>Cotton</strong><span>₹6,200/qtl</span></div>
+                    <div class="mc-trend down">-1.2%</div>
+                </div>
+                <div class="marquee-card glass">
+                    <div class="mc-icon" style="color: #a78bfa"><i class="ph ph-brain"></i></div>
+                    <div class="mc-info"><strong>AI Alert</strong><span>Hold Turmeric</span></div>
+                    <div class="mc-trend neutral">Optimizing</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section features-section">
+        <div class="section-head reveal">
+            <h2>Eliminate Intermediaries.<br><span class="text-gradient">Maximize Profit.</span></h2>
+            <p>Enterprise-grade trading tools built for Indian farmers.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card glass reveal">
+                <div class="icon-box"><i class="ph ph-chart-line-up"></i></div>
+                <h3>Real-Time Tracking</h3>
+                <p>Live crop price updates across Indian mandis and global markets, all in one place.</p>
+            </div>
+            <div class="feature-card glass reveal reveal-delay-1">
+                <div class="icon-box icon-box-green"><i class="ph ph-brain"></i></div>
+                <h3>AI Predictions</h3>
+                <p>Advanced models analyze weather, demand-supply, and soil data to predict optimal selling windows.</p>
+            </div>
+            <div class="feature-card glass reveal reveal-delay-2">
+                <div class="icon-box icon-box-yellow"><i class="ph ph-handshake"></i></div>
+                <h3>Direct Negotiation</h3>
+                <p>Negotiate prices directly with verified corporate buyers — no middlemen cutting profits.</p>
+            </div>
+            <div class="feature-card glass reveal">
+                <div class="icon-box icon-box-pink"><i class="ph ph-translate"></i></div>
+                <h3>Regional Languages</h3>
+                <p>Use the platform in Hindi, Marathi, Tamil, Telugu, Gujarati, and more Indian languages.</p>
+            </div>
+            <div class="feature-card glass reveal reveal-delay-1">
+                <div class="icon-box"><i class="ph ph-robot"></i></div>
+                <h3>AI Chatbot</h3>
+                <p>Ask any farming question — from pest control to government schemes — in your own language.</p>
+            </div>
+            <div class="feature-card glass reveal reveal-delay-2">
+                <div class="icon-box icon-box-green"><i class="ph ph-plant"></i></div>
+                <h3>Crop Health Alerts</h3>
+                <p>Live weather-based pest and disease warnings to protect your harvest before it's too late.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="section how-section">
+        <div class="section-head reveal">
+            <h2>How <span class="text-gradient">YieldIQ</span> Works</h2>
+            <p>From farm to market in 3 simple steps.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card reveal">
+                <div class="step-number">01</div>
+                <div class="step-icon"><i class="ph ph-sign-in"></i></div>
+                <h3>Sign Up & Add Your Crops</h3>
+                <p>Create your profile, select your state, and add the crops you're growing this season.</p>
+            </div>
+            <div class="step-connector reveal"><i class="ph ph-arrow-right"></i></div>
+            <div class="step-card reveal reveal-delay-1">
+                <div class="step-number">02</div>
+                <div class="step-icon step-icon-green"><i class="ph ph-brain"></i></div>
+                <h3>AI Analyzes The Market</h3>
+                <p>Our AI scans real-time weather, mandi prices, and buyer demand to find your optimal selling window.</p>
+            </div>
+            <div class="step-connector reveal"><i class="ph ph-arrow-right"></i></div>
+            <div class="step-card reveal reveal-delay-2">
+                <div class="step-number">03</div>
+                <div class="step-icon step-icon-yellow"><i class="ph ph-handshake"></i></div>
+                <h3>Sell Directly to Buyers</h3>
+                <p>Accept bids, negotiate prices, and close deals directly — no middlemen, maximum profit.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta-section reveal">
+        <div class="cta-card glass">
+            <h2>Ready to <span class="text-gradient">Transform</span> Your Farming?</h2>
+            <p>Join 1,200+ Indian farmers already using AI to maximize their crop revenue.</p>
+            <button class="btn btn-primary btn-lg glow-btn" onclick="showPage('login-page')">
+                <i class="ph ph-rocket-launch"></i> Get Started Free
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner glass">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo-group">
+                        <img src="assets/logo.png" alt="YieldIQ" class="logo-img-sm">
+                        <span class="logo-text">Yield<span class="text-muted-span">IQ</span></span>
+                    </div>
+                    <p>AI-Powered Crop Price Optimization & Smart Trading Platform for Indian Farmers.</p>
+                </div>
+                <div class="footer-links-col">
+                    <h4>Platform</h4>
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#stats-section">Impact</a>
+                </div>
+                <div class="footer-links-col">
+                    <h4>Resources</h4>
+                    <a href="#">Government Schemes</a>
+                    <a href="#">Mandi Prices</a>
+                    <a href="#">Farming Tips</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built for InCSEption 2.0 Hackathon — SDG-2 (Zero Hunger) | © 2026 YieldIQ</p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- ===================== DASHBOARD ===================== -->
+<div id="dashboard-page" class="page">
+    <!-- Sidebar -->
+    <aside class="sidebar glass">
+        <div class="logo-group" style="cursor:pointer" onclick="handleLogout()">
+            <img src="assets/logo.png" alt="YieldIQ" class="logo-img-sm">
+            <span class="logo-text">Yield<span class="text-muted-span">IQ</span></span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-view="dashboard-home" onclick="switchView(this, 'dashboard-home')">
+                <i class="ph ph-squares-four"></i> Dashboard
+            </a>
+            <a href="#" class="nav-item" data-view="markets-view" onclick="switchView(this, 'markets-view')">
+                <i class="ph ph-chart-bar"></i> Markets
+            </a>
+            <a href="#" class="nav-item" data-view="sell-crop-view" onclick="switchView(this, 'sell-crop-view')">
+                <i class="ph ph-plus-circle"></i> Sell Crop
+            </a>
+            <a href="#" class="nav-item" data-view="marketplace-view" onclick="switchView(this, 'marketplace-view')">
+                <i class="ph ph-storefront"></i> Marketplace
+            </a>
+            <a href="#" class="nav-item" data-view="my-deals-view" onclick="switchView(this, 'my-deals-view')">
+                <i class="ph ph-handshake"></i> My Deals
+            </a>
+            <a href="#" class="nav-item" data-view="predictions-view" onclick="switchView(this, 'predictions-view')">
+                <i class="ph ph-brain"></i> AI Predictions
+            </a>
+            <a href="#" class="nav-item" data-view="crop-health-view" onclick="switchView(this, 'crop-health-view')">
+                <i class="ph ph-plant"></i> Crop Health
+            </a>
+            <a href="#" class="nav-item" data-view="buyers-view" onclick="switchView(this, 'buyers-view')">
+                <i class="ph ph-users"></i> Buyers
+            </a>
+            <a href="#" class="nav-item" data-view="negotiate-view" onclick="switchView(this, 'negotiate-view')">
+                <i class="ph ph-scales"></i> Negotiation
+            </a>
+        </nav>
+        <div class="sidebar-bottom">
+            <button class="btn btn-outline w-full" onclick="handleLogout()">
+                <i class="ph ph-sign-out"></i> Log Out
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dash-main">
+        <header class="dash-topbar glass">
+            <div class="search-box">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="text" placeholder="Search markets, crops, buyers...">
+            </div>
+            <div class="topbar-right">
+                <!-- Location Tracker -->
+                <div class="location-tracker" id="locationTracker" onclick="openLocationPanel()">
+                    <i class="ph ph-map-pin-line"></i>
+                    <span id="topbarLocationName">Delhi, India</span>
+                    <span class="location-dot" id="locationDot" title="GPS Status"></span>
+                </div>
+                <select id="langSelectDash" class="lang-select" onchange="changeLanguage(this.value)" style="margin-right: 1rem;">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="kn">ಕನ್ನಡ</option>
+                </select>
+
+                <!-- Notification Bell -->
+                <div style="position:relative;">
+                    <button class="icon-btn" onclick="toggleNotifPanel()"><i class="ph ph-bell"></i><span class="notif-dot"></span></button>
+                    <div id="notifPanel" style="display:none;position:absolute;right:0;top:45px;width:320px;background:rgba(5,8,20,0.98);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:1rem;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,0.8);">
+                        <h4 style="margin-bottom:0.75rem;"><i class="ph ph-bell-ringing"></i> Notifications</h4>
+                        <div id="notifList" style="max-height:250px;overflow-y:auto;">
+                            <div style="padding:10px;background:rgba(0,240,255,0.05);border-radius:10px;margin-bottom:6px;font-size:0.85rem;">
+                                <strong>🌾 Welcome to YieldIQ!</strong><br><span style="color:var(--text-muted);">Start by listing your crop on the marketplace.</span>
+                            </div>
+                            <div style="padding:10px;background:rgba(76,217,100,0.05);border-radius:10px;margin-bottom:6px;font-size:0.85rem;">
+                                <strong>📊 Live Prices Updated</strong><br><span style="color:var(--text-muted);">Market data refreshed from data.gov.in</span>
+                            </div>
+                            <div style="padding:10px;background:rgba(255,180,0,0.05);border-radius:10px;font-size:0.85rem;">
+                                <strong>🤖 AI Tip</strong><br><span style="color:var(--text-muted);">Try AI Predictions to plan your next sale!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Avatar -->
+                <div style="position:relative;">
+                    <div class="user-avatar" onclick="toggleProfilePanel()" style="cursor:pointer;">
+                        <img id="userAvatarImg" src="https://ui-avatars.com/api/?name=Farmer&background=00f0ff&color=050814&bold=true" alt="User">
+                        <span id="userName">Farmer</span>
+                    </div>
+                    <div id="profilePanel" style="display:none;position:absolute;right:0;top:50px;width:280px;background:rgba(5,8,20,0.98);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:1.25rem;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,0.8);">
+                        <div style="text-align:center;margin-bottom:1rem;">
+                            <img id="profileAvatar" src="https://ui-avatars.com/api/?name=Farmer&background=00f0ff&color=050814&bold=true&size=80" style="border-radius:50%;width:64px;height:64px;margin-bottom:8px;">
+                            <h4 id="profileName" style="margin:0;">Farmer</h4>
+                            <p id="profileEmail" style="color:var(--text-muted);font-size:0.8rem;margin:2px 0;">—</p>
+                            <p id="profilePhone" style="color:var(--text-muted);font-size:0.8rem;margin:0;">—</p>
+                        </div>
+                        <hr style="border:none;border-top:1px solid var(--border);margin:0.75rem 0;">
+                        <button class="btn btn-outline w-full btn-sm" style="margin-bottom:6px;" onclick="switchView(document.querySelector('[data-view=sell-crop-view]'),'sell-crop-view');toggleProfilePanel()"><i class="ph ph-plus-circle"></i> My Listings</button>
+                        <button class="btn btn-outline w-full btn-sm" style="margin-bottom:6px;" onclick="switchView(document.querySelector('[data-view=my-deals-view]'),'my-deals-view');toggleProfilePanel()"><i class="ph ph-handshake"></i> My Deals</button>
+                        <button class="btn btn-outline w-full btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="handleLogout()"><i class="ph ph-sign-out"></i> Log Out</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Location Panel (Overlay) -->
+        <div id="locationPanel" class="location-panel glass" style="display:none;">
+            <div class="loc-panel-header">
+                <h3><i class="ph ph-map-trifold"></i> Location Settings</h3>
+                <button onclick="closeLocationPanel()" class="chatbot-close"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="loc-panel-body">
+                <!-- Current Location Display -->
+                <div class="loc-current-box">
+                    <div class="loc-current-icon" id="locStatusIcon"><i class="ph ph-map-pin"></i></div>
+                    <div class="loc-current-info">
+                        <span class="loc-current-name" id="panelLocationName">Delhi, India</span>
+                        <span class="loc-current-coords" id="panelLocationCoords">28.61°N, 77.23°E</span>
+                    </div>
+                </div>
+
+                <!-- GPS Auto-detect -->
+                <button class="btn btn-primary w-full" id="gpsDetectBtn" onclick="detectMyLocation()" style="margin:1rem 0;">
+                    <i class="ph ph-crosshair"></i> <span id="gpsDetectText">Use My Current Location (GPS)</span>
+                </button>
+                <p id="gpsStatus" style="text-align:center;font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;"></p>
+
+                <!-- Manual City Entry -->
+                <div class="loc-manual-section">
+                    <label style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.5rem;display:block;">Or enter city manually:</label>
+                    <div style="display:flex;gap:0.5rem;">
+                        <input type="text" id="locCityInput" placeholder="e.g. Mumbai, Jaipur, Lucknow..." style="flex:1;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:0.65rem 1rem;color:var(--text);font-family:var(--font);outline:none;">
+                        <button class="btn btn-primary btn-sm" onclick="manualCitySearch()"><i class="ph ph-magnifying-glass"></i> Go</button>
+                    </div>
+                    <div id="locCitySuggestions" style="margin-top:0.5rem;"></div>
+                </div>
+
+                <!-- Quick City Buttons -->
+                <div style="margin-top:1.25rem;">
+                    <label style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.5rem;display:block;">Quick switch:</label>
+                    <div class="quick-cities">
+                        <button onclick="quickSetCity(28.61,77.23,'Delhi')" class="btn btn-outline btn-sm">Delhi</button>
+                        <button onclick="quickSetCity(19.08,72.88,'Mumbai')" class="btn btn-outline btn-sm">Mumbai</button>
+                        <button onclick="quickSetCity(13.08,80.27,'Chennai')" class="btn btn-outline btn-sm">Chennai</button>
+                        <button onclick="quickSetCity(12.97,77.59,'Bangalore')" class="btn btn-outline btn-sm">Bangalore</button>
+                        <button onclick="quickSetCity(22.57,88.36,'Kolkata')" class="btn btn-outline btn-sm">Kolkata</button>
+                        <button onclick="quickSetCity(26.85,80.95,'Lucknow')" class="btn btn-outline btn-sm">Lucknow</button>
+                        <button onclick="quickSetCity(23.26,77.41,'Bhopal')" class="btn btn-outline btn-sm">Bhopal</button>
+                        <button onclick="quickSetCity(26.91,75.79,'Jaipur')" class="btn btn-outline btn-sm">Jaipur</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== VIEW: Dashboard Home ===== -->
+        <div id="dashboard-home" class="dash-view active">
+            <div class="view-header">
+                <h2>Welcome back, Farmer! 👋</h2>
+                <p>Here's your real-time portfolio summary powered by live data.</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card glass">
+                    <div class="stat-top"><span>Portfolio Value</span><i class="ph ph-wallet text-cyan"></i></div>
+                    <h3 id="statPortfolio">Loading...</h3>
+                    <div class="stat-badge positive" id="statPortfolioSub">Calculating...</div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-top"><span>My Listings</span><i class="ph ph-storefront text-green"></i></div>
+                    <h3 id="statListings">Loading...</h3>
+                    <div class="stat-badge" id="statListingsSub">Fetching...</div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-top"><span>Active Offers</span><i class="ph ph-handshake text-yellow"></i></div>
+                    <h3 id="statOffers">Loading...</h3>
+                    <div class="stat-badge" id="statOffersSub">Fetching...</div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-top"><span>Weather</span><i class="ph ph-cloud-sun text-yellow"></i></div>
+                    <h3 id="weatherTemp">Loading...</h3>
+                    <div class="stat-badge" id="weatherDesc">Fetching data...</div>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-box glass">
+                    <div class="chart-head">
+                        <h3>Market Trend</h3>
+                        <select id="cropSelect" class="glass-select" onchange="updateMarketChart()">
+                            <option value="wheat">Wheat</option>
+                            <option value="rice">Rice</option>
+                            <option value="corn">Corn</option>
+                            <option value="soybean">Soybean</option>
+                            <option value="cotton">Cotton</option>
+                            <option value="mustard">Mustard</option>
+                            <option value="onion">Onion</option>
+                            <option value="potato">Potato</option>
+                            <option value="tomato">Tomato</option>
+                            <option value="sugarcane">Sugarcane</option>
+                            <option value="chilli">Chilli</option>
+                            <option value="garlic">Garlic</option>
+                        </select>
+                    </div>
+                    <div class="canvas-wrap"><canvas id="marketChart"></canvas></div>
+                </div>
+                <div class="recs-box glass">
+                    <h3>AI Recommendations</h3>
+                    <ul class="rec-list" id="aiRecsList">
+                        <li>
+                            <div class="rec-icon bg-blue"><i class="ph ph-spinner"></i></div>
+                            <div class="rec-info"><h4>Loading...</h4><p>Analyzing live market data...</p></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== VIEW: Markets ===== -->
+        <div id="markets-view" class="dash-view">
+            <div class="view-header">
+                <h2><i class="ph ph-chart-bar"></i> Live Market Prices</h2>
+                <p>Real-time mandi prices across India (via data.gov.in API).</p>
+            </div>
+            <div class="market-table-wrap glass">
+                <table class="market-table">
+                    <thead>
+                        <tr>
+                            <th>Crop</th>
+                            <th>Mandi</th>
+                            <th>Price (₹/Qtl)</th>
+                            <th>Change</th>
+                            <th>Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody id="marketTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== VIEW: AI Predictions ===== -->
+        <div id="predictions-view" class="dash-view">
+            <div class="view-header">
+                <h2><i class="ph ph-brain"></i> AI Predictive Analysis</h2>
+                <p>Enter your farm details and let our AI analyze the best selling strategy.</p>
+            </div>
+            <div class="prediction-grid">
+                <div class="prediction-form glass">
+                    <h3>Analyze My Farm</h3>
+                    <div class="form-group">
+                        <label>Crop Type</label>
+                        <select id="predCrop" class="glass-select w-full">
+                            <option value="Wheat">Wheat</option>
+                            <option value="Rice">Rice</option>
+                            <option value="Corn">Corn</option>
+                            <option value="Soybean">Soybean</option>
+                            <option value="Cotton">Cotton</option>
+                            <option value="Mustard">Mustard</option>
+                            <option value="Onion">Onion</option>
+                            <option value="Potato">Potato</option>
+                            <option value="Tomato">Tomato</option>
+                            <option value="Sugarcane">Sugarcane</option>
+                            <option value="Chilli">Chilli</option>
+                            <option value="Garlic">Garlic</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Land Area (Acres)</label>
+                        <input type="number" id="predArea" placeholder="e.g. 5" class="w-full" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <select id="predState" class="glass-select w-full">
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Karnataka">Karnataka</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-full" onclick="runPrediction()">
+                        <i class="ph ph-lightning"></i> Run AI Analysis
+                    </button>
+                </div>
+                <div class="prediction-result glass" id="predictionResult">
+                    <div class="pred-placeholder">
+                        <i class="ph ph-brain"></i>
+                        <p>Fill in the form and click "Run AI Analysis" to get your personalized report.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== VIEW: Sell Crop ===== -->
+        <div id="sell-crop-view" class="dash-view">
+            <div class="view-header">
+                <h2><i class="ph ph-plus-circle"></i> List Your Crop For Sale</h2>
+                <p>Fill in the details below to list your crop on the marketplace.</p>
+            </div>
+            <div class="prediction-grid">
+                <div class="prediction-form glass">
+                    <h3><i class="ph ph-plant"></i> Crop Details</h3>
+                    <div class="form-group">
+                        <label>Crop Name</label>
+                        <select id="sellCrop" class="glass-select w-full">
+                            <option value="Wheat">Wheat</option>
+                            <option value="Rice">Rice</option>
+                            <option value="Corn">Corn</option>
+                            <option value="Soybean">Soybean</option>
+                            <option value="Cotton">Cotton</option>
+                            <option value="Mustard">Mustard</option>
+                            <option value="Onion">Onion</option>
+                            <option value="Potato">Potato</option>
+                            <option value="Tomato">Tomato</option>
+                            <option value="Sugarcane">Sugarcane</option>
+                            <option value="Chilli">Chilli</option>
+                            <option value="Garlic">Garlic</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity (Quintals)</label>
+                        <input type="number" id="sellQty" placeholder="e.g. 50" class="w-full">
+                    </div>
+                    <div class="form-group">
+                        <label>Asking Price (₹ per Quintal)</label>
+                        <input type="number" id="sellPrice" placeholder="e.g. 2800" class="w-full">
+                    </div>
+                    <div class="form-group">
+                        <label>Location / Mandi</label>
+                        <input type="text" id="sellLocation" placeholder="e.g. Azadpur, Delhi" class="w-full">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Harvest Date</label>
+                        <input type="date" id="sellHarvestDate" class="w-full">
+                    </div>
+                    <div class="form-group">
+                        <label>Description (optional)</label>
+                        <textarea id="sellDesc" placeholder="Quality details, organic certification, etc." class="w-full" style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:0.65rem 1rem;color:var(--text);font-family:var(--font);min-height:80px;resize:vertical;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="ph ph-camera"></i> Crop Image</label>
+                        <input type="file" id="sellImage" accept="image/*" class="w-full" style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:0.65rem 1rem;color:var(--text);">
+                        <div id="sellImagePreview" style="margin-top:8px;"></div>
+                    </div>
+                    <button class="btn btn-primary w-full" onclick="createListing()">
+                        <i class="ph ph-check-circle"></i> List My Crop on Marketplace
+                    </button>
+                    <div id="sellStatus" style="margin-top:10px;text-align:center;"></div>
+                </div>
+                <div class="prediction-result glass" id="myListingsPanel">
+                    <h3 style="margin-bottom:1rem;"><i class="ph ph-list"></i> My Active Listings</h3>
+                    <div id="myListingsGrid">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== VIEW: Marketplace (Browse & Buy) ===== -->
+        <div id="marketplace-view" class="dash-view">
+            <div class="view-header">
+                <h2><i class="ph ph-storefront"></i> Crop Marketplace</h2>
+                <p>Browse crops listed by farmers across India. Make offers directly!</p>
+            </div>
+            <div class="buyers-grid" id="marketplaceGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- ===== VIEW: My Deals ===== -->
+        <div id="my-deals-view" class="dash-view">
+            <div class="view-header">
+                <h2><i class="ph ph-handshake"></i> My Deals</h2>
+                <p>Track your incoming and outgoing offers.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+                <div class="glass" style="padding:1.5rem;border-radius:16px;">
+                    <h3 style="margin-bottom:1rem;color:var(--primary);"><i class="ph ph-arrow-down-left"></i> Incoming Offers (As Seller)</h3>
+                    <div id="incomingOffers">Loading...</div>
+                </div>
+                <div class="glass" style="padding:1.5rem;border-radius:16px;">
+                    <h3 style="margin-bottom:1rem;color:var(--secondary);"><i class="ph ph-arrow-up-right"></i> My Bids (As Buyer)</h3>
+                    <div id="outgoingOffers">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Panel (Overlay) -->
+        <div id="chatPanel" class="location-panel glass" style="display:none;width:420px;max-height:500px;">
+            <div class="loc-panel-header">
+                <h3><i class="ph ph-chat-dots"></i> <span id="chatPanelTitle">Chat</span></h3>
+                <button onclick="closeChatPanel()" class="chatbot-close"><i class="ph ph-x"></i></button>
+            </div>
+            <div id="chatMessages2" style="height:320px;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.5rem;"></div>
+            <form onsubmit="return sendDealChat(event)" style="display:flex;gap:0.5rem;padding:0.75rem;border-top:1px solid var(--border);">
+                <input type="text" id="chatDealInput" placeholder="Type a message..." style="flex:1;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.75rem;color:var(--text);font-family:var(--font);outline:none;">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="ph ph-paper-plane-tilt"></i></button>
+            </form>
+        </div>
+
+        <!-- ===== VIEW: Buyers Directory (Legacy) ===== -->
+        <div id="buyers-view" class="dash-view">
+            <div class="view-header">
+                <h2><i class="ph ph-users"></i> Verified Buyers Directory</h2>
+                <p>Connect directly with corporate buyers and brokers.</p>
+            </div>
+            <div class="buyers-grid" id="buyersGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- ===== VIEW: Negotiation (Legacy) ===== -->
+        <div id="negotiate-view" class="dash-view">
+            <div class="view-header">
+                <h2><i class="ph ph-scales"></i> Negotiation Board</h2>
+                <p>Counter-offer, negotiate prices, and chat directly with buyers and sellers.</p>
+            </div>
+            <div class="negotiate-list" id="negotiateList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- ===== VIEW: Crop Health ===== -->
+        <div id="crop-health-view" class="dash-view">
+            <div class="view-header">
+                <h2><i class="ph ph-plant"></i> Crop Health & Pest Warnings</h2>
+                <p>Live weather-based alerts powered by Open-Meteo API.</p>
+            </div>
+
+            <!-- Location Bar -->
+            <div class="loc-bar glass">
+                <div class="loc-bar-left">
+                    <div class="loc-bar-pin"><i class="ph ph-map-pin-line"></i></div>
+                    <div class="loc-bar-info">
+                        <span class="loc-bar-name" id="cropHealthCityName">Delhi, India</span>
+                        <span class="loc-bar-coords" id="cropHealthCoords">28.61°N, 77.23°E</span>
+                    </div>
+                    <span class="loc-bar-badge" id="locSourceBadge">Default</span>
+                </div>
+                <div class="loc-bar-right">
+                    <button class="btn btn-sm" onclick="detectMyLocation()" style="background:rgba(0,240,255,0.1);border:1px solid var(--primary);color:var(--primary);" id="cropGpsBtn">
+                        <i class="ph ph-crosshair"></i> GPS
+                    </button>
+                    <input type="text" id="citySearch" placeholder="Search city..." style="width:220px;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.75rem;color:var(--text);font-family:var(--font);font-size:0.85rem;outline:none;" oninput="debounceCitySearch()">
+                    <button class="btn btn-primary btn-sm" onclick="searchCity()"><i class="ph ph-magnifying-glass"></i></button>
+                </div>
+            </div>
+
+            <div class="health-grid">
+                <div class="health-card glass" id="weatherCard">
+                    <h3><i class="ph ph-cloud-sun"></i> Current Weather <span id="weatherApiTag" style="font-size:0.7rem;color:var(--text-muted);font-weight:400;margin-left:0.5rem;">via Open-Meteo API</span></h3>
+                    <div class="weather-data" id="weatherDetails">
+                        <p>Loading weather data...</p>
+                    </div>
+                </div>
+                <div class="health-card glass" id="soilCard">
+                    <h3><i class="ph ph-drop"></i> Soil Conditions <span style="font-size:0.7rem;color:var(--text-muted);font-weight:400;margin-left:0.5rem;">via Open-Meteo Soil API</span></h3>
+                    <div id="soilDetails">
+                        <p>Loading soil data...</p>
+                    </div>
+                </div>
+                <div class="health-card glass warning-card" id="pestCard">
+                    <h3><i class="ph ph-bug"></i> Pest & Disease Alerts</h3>
+                    <div id="pestAlerts">
+                        <p>Analyzing conditions...</p>
+                    </div>
+                </div>
+                <div class="health-card glass" id="irrigationCard">
+                    <h3><i class="ph ph-drop-half-bottom"></i> Irrigation Advisory</h3>
+                    <div id="irrigationAdvice">
+                        <p>Calculating...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7-Day Forecast Chart (Open-Meteo Forecast API) -->
+            <div class="health-grid" style="margin-top:1.5rem;">
+                <div class="health-card glass">
+                    <h3><i class="ph ph-calendar"></i> 7-Day Temperature Forecast <span style="font-size:0.7rem;color:var(--text-muted);font-weight:400;margin-left:0.5rem;">Open-Meteo API</span></h3>
+                    <div style="position:relative;height:240px;"><canvas id="forecastChart"></canvas></div>
+                </div>
+                <div class="health-card glass">
+                    <h3><i class="ph ph-wind"></i> Air Quality Index <span style="font-size:0.7rem;color:var(--text-muted);font-weight:400;margin-left:0.5rem;">Open-Meteo Air Quality API</span></h3>
+                    <div id="airQualityData">
+                        <p>Loading air quality data...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UV Index & Sunrise/Sunset -->
+            <div class="health-grid" style="margin-top:1.5rem;">
+                <div class="health-card glass">
+                    <h3><i class="ph ph-sun"></i> UV Index & Solar Data <span style="font-size:0.7rem;color:var(--text-muted);font-weight:400;margin-left:0.5rem;">Open-Meteo API</span></h3>
+                    <div id="uvData">
+                        <p>Loading UV data...</p>
+                    </div>
+                </div>
+                <div class="health-card glass">
+                    <h3><i class="ph ph-newspaper"></i> Agri-Weather Advisory</h3>
+                    <div id="weatherAdvisory">
+                        <p>Generating advisory...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chatbot -->
+    <div id="chatbot-toggle" class="chatbot-fab" onclick="toggleChatbot()">
+        <i class="ph ph-robot"></i>
+    </div>
+    <div id="chatbot-window" class="chatbot-window glass">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <i class="ph ph-robot"></i> YieldIQ Assistant
+            </div>
+            <button onclick="toggleChatbot()" class="chatbot-close"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="chatbot-messages" id="chatMessages">
+            <div class="chat-msg bot">
+                <p>Namaste! 🙏 I'm your YieldIQ Assistant. Ask me about crop prices, farming tips, government schemes, or anything else!</p>
+            </div>
+        </div>
+        <form class="chatbot-input" onsubmit="return sendChat(event)">
+            <input type="text" id="chatInput" placeholder="Ask me anything...">
+            <button type="submit"><i class="ph ph-paper-plane-tilt"></i></button>
+        </form>
+    </div>
+</div>
+
+<script src="app.js?v=4"></script>
+
+<!-- Mobile bottom nav for small screens -->
+<nav class="mobile-bottom-nav" id="mobileNav">
+    <a onclick="switchView(this, 'dashboard-home')" class="mob-nav-item active"><i class="ph ph-squares-four"></i><span>Home</span></a>
+    <a onclick="switchView(this, 'markets-view')" class="mob-nav-item"><i class="ph ph-chart-bar"></i><span>Markets</span></a>
+    <a onclick="switchView(this, 'marketplace-view')" class="mob-nav-item"><i class="ph ph-storefront"></i><span>Shop</span></a>
+    <a onclick="switchView(this, 'sell-crop-view')" class="mob-nav-item"><i class="ph ph-plus-circle"></i><span>Sell</span></a>
+    <a onclick="switchView(this, 'my-deals-view')" class="mob-nav-item"><i class="ph ph-handshake"></i><span>Deals</span></a>
+    <a onclick="switchView(this, 'predictions-view')" class="mob-nav-item"><i class="ph ph-brain"></i><span>AI</span></a>
+    <a onclick="switchView(this, 'buyers-view')" class="mob-nav-item"><i class="ph ph-users"></i><span>Buyers</span></a>
+    <a onclick="switchView(this, 'negotiate-view')" class="mob-nav-item"><i class="ph ph-scales"></i><span>Negotiate</span></a>
+</nav>
+
+</body>
+</html>

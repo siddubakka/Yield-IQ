@@ -1,0 +1,15 @@
+# Virtual Environments
+backend/venv/
+venv/
+env/
+.env
+
+# Python Caches
+*.pyc
+__pycache__/
+
+# Database
+*.db
+
+# macOS
+.DS_Store
